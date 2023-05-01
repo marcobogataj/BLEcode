@@ -7,12 +7,7 @@ from pynput import keyboard
 import sys
 
 # Constants
-KNOWN_ADDRESSES = [
-    # "38:F2:EE:52:FD:7A", # broken
-    "62:03:D3:87:E7:35",
-    "E0:65:95:2D:11:97",
-    "DD:FC:F2:76:67:43",
-]
+KNOWN_ADDRESSES = ["DD:FC:F2:76:67:43"]
 TIMEOUT = 10
 
 SENSOR_NAME_LIST = [
