@@ -1,0 +1,119 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2580
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica-Bold;\f1\fswiss\fcharset0 Helvetica;\f2\fswiss\fcharset0 Helvetica-BoldOblique;
+\f3\fswiss\fcharset0 Helvetica-Oblique;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red47\green55\blue65;\red0\green0\blue0;
+\red47\green55\blue65;\red0\green0\blue0;\red255\green255\blue255;\red47\green55\blue65;\red255\green255\blue255;
+\red47\green55\blue65;\red47\green55\blue65;}
+{\*\expandedcolortbl;;\cssrgb\c0\c1\c1;\cssrgb\c23979\c27907\c32191;\cssrgb\c0\c1\c1;
+\cssrgb\c23979\c27907\c32191;\cssrgb\c0\c0\c0;\cssrgb\c100000\c100000\c99985\c0;\cssrgb\c24149\c28097\c32290;\cssrgb\c100000\c100000\c100000\c0;
+\cssrgb\c24092\c28034\c32257;\cssrgb\c24036\c27970\c32224;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid1\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid1}
+{\list\listtemplateid2\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid101\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid2}
+{\list\listtemplateid3\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid201\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{hyphen\}}{\leveltext\leveltemplateid202\'01\uc0\u8259 ;}{\levelnumbers;}\fi-360\li1440\lin1440 }{\listname ;}\listid3}
+{\list\listtemplateid4\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid301\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid302\'02\'01.;}{\levelnumbers\'01;}\fi-360\li1440\lin1440 }{\listname ;}\listid4}
+{\list\listtemplateid5\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid401\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid402\'02\'01.;}{\levelnumbers\'01;}\fi-360\li1440\lin1440 }{\listname ;}\listid5}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}{\listoverride\listid3\listoverridecount0\ls3}{\listoverride\listid4\listoverridecount0\ls4}{\listoverride\listid5\listoverridecount0\ls5}}
+\paperw11900\paperh16840\margl1440\margr1440\vieww27200\viewh16080\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\b\fs72 \cf0 Software requirements Nicla+BLE+Python+TCP/IP-Simulink\
+
+\f1\b0\fs48 \
+\ul Scope of work\cf2 \expnd0\expndtw0\kerning0
+\ulnone \outl0\strokewidth0 \strokec3 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls1\ilvl0\cf2 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 		In the context of laser cutting, environmental conditions of the working area close to the laser beam are key for obtaining a satisfying cutting result. Monitoring of pressure, temperature and air contamination is common in all high-end laser cutting machines to estimate the quality of work and prevent product and machine degradation.\
+\pard\tx566\pardeftab720\partightenfactor0
+\cf2 \
+\pard\tx566\pardeftab720\partightenfactor0
+\cf4 \ul \ulc4 System overview and definitions\
+	\ulnone  A mechanically actuated systems, called from now on 
+\f2\i\b Plotter
+\f1\i0\b0 , is regarded \cf4 \expnd0\expndtw0\kerning0
+as a potential laser cutting machine.\
+		The end effector moves on a 2-DOFs plane with high dynamics and in a real-time variable environment. \
+     A 
+\f3\i Simulink 
+\f1\i0 application is on-board of the industrial computer (
+\f2\i\b IC
+\f1\i0\b0 ) and can manage signals coming from internal and external 	 of the original machine. The idea is to use an low-energy embedded board, such as the Arduino 
+\f2\i\b Nicla
+\f1\i0\b0  Sense ME,\
+     to augment sensor data already present, as a way to improve the overall quality of the process.\
+\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls2\ilvl0\cf4      The sensor signals sent are coming from:\
+\pard\tx940\tx1440\pardeftab720\li1440\fi-1440\partightenfactor0
+\ls3\ilvl1\cf4 \kerning1\expnd0\expndtw0 {\listtext	\uc0\u8259 	}\AppleTypeServices\AppleTypeServicesF65539 \cf6 \cb7 \expnd0\expndtw0\kerning0
+BHI260AP -> \AppleTypeServices accelerometer + gyroscope\
+\pard\tx940\tx1440\pardeftab720\li1440\fi-1440\partightenfactor0
+\ls3\ilvl1\cf6 \kerning1\expnd0\expndtw0 {\listtext	\uc0\u8259 	}\AppleTypeServices\AppleTypeServicesF65539 \expnd0\expndtw0\kerning0
+BME688 -> Environmental sens\cb9 or
+\fs32 \AppleTypeServices\AppleTypeServicesF65539 \cf4  
+\fs48 \AppleTypeServices \cf4 h\cf4 \cb1 u\cf4 midity and temperature, air quality index, pressure\
+\pard\tx940\tx1440\pardeftab720\li1440\fi-1440\partightenfactor0
+\ls3\ilvl1\cf4 \kerning1\expnd0\expndtw0 {\listtext	\uc0\u8259 	}\AppleTypeServices\AppleTypeServicesF65539 \cf4 \cb9 \expnd0\expndtw0\kerning0
+BMP390 -> High performance pressure sensor\
+\pard\tx566\tx1133\pardeftab720\partightenfactor0
+\AppleTypeServices \cf4 \cb1 \
+	 The 
+\f2\i\b IC 
+\f1\i0\b0 can communicate with the outside using ethernet cables, However, no wireless communication can be \
+	 implemented directly, thus a \'93bridge\'94 between the 
+\f2\i\b Nicla 
+\f1\i0\b0 and the 
+\f2\i\b IC 
+\f1\i0\b0 is required.\
+\pard\tx566\pardeftab720\partightenfactor0
+\cf2 \kerning1\expnd0\expndtw0 \
+\pard\tx566\pardeftab720\partightenfactor0
+\cf2 \ul \ulc2 System requirements\
+\pard\tx566\tx1133\pardeftab720\partightenfactor0
+
+\f3\i \cf4 \expnd0\expndtw0\kerning0
+\ulnone 	Functional requirements
+\f1\i0 \cf2 \kerning1\expnd0\expndtw0 \
+\pard\tx940\tx1440\pardeftab720\li1440\fi-1440\partightenfactor0
+\ls4\ilvl1\cf4 {\listtext	1.	}\expnd0\expndtw0\kerning0
+The proposed system is responsible for communication between an Arduino 
+\f2\i\b Nicla
+\f3\b0  
+\f1\i0 Sense ME and the \cf4 industrial computer \cf4 (
+\f2\i\b IC
+\f3\b0 )
+\f1\i0   that controls the 
+\f2\i\b Plotter
+\f1\i0\b0 .\
+\ls4\ilvl1\kerning1\expnd0\expndtw0 {\listtext	2.	}Data coming from the 
+\f2\i\b \cf4 \expnd0\expndtw0\kerning0
+Nicla
+\f1\i0\b0 \cf4 \kerning1\expnd0\expndtw0  is processed and sent to the control algorithm to operate real-time decisions and change cutting parameters. Fault monitoring in parallel with the original machine is also possible.\cf2 \
+{\listtext	3.	}Machining data can be stored for posterior analysis which, combined with real data coming from the cut products, can be useful in terms of machine upgrades \cf4 to obtain better products,\cf2  fault identification and predictive maintenance.\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec3 \
+\ls4\ilvl1\kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	4.	}A suitable application must be designed, able to interact both with the 
+\f2\i\b \cf4 \expnd0\expndtw0\kerning0
+Nicla 
+\f1\i0\b0 and the 
+\f2\i\b \cf4 \kerning1\expnd0\expndtw0 IC
+\f3\b0 . \
+\pard\tx566\pardeftab720\partightenfactor0
+
+\f1\i0 \cf2 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec3 \
+\pard\tx566\tx1133\pardeftab720\partightenfactor0
+
+\f3\i \cf4 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 	Non-Functional and Performance requirements\
+\pard\tx940\tx1440\pardeftab720\li1440\fi-1440\partightenfactor0
+\ls5\ilvl1
+\f1\i0 \cf2 \kerning1\expnd0\expndtw0 {\listtext	1.	}Multi-processing of signals must be designed\
+{\listtext	2.	}Low latency (ideally order of milliseconds) is required to work with a real-time system\
+{\listtext	3.	}A suitable communication protocol must be chosen to work with \
+\pard\tx566\tx1133\pardeftab720\partightenfactor0
+\cf2 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec3 \
+
+\f0\b DESIGN\
+
+\f1\b0 \
+}

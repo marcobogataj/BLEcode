@@ -1,5 +1,7 @@
 import asyncio
+import socket
 from datetime import datetime
+import time
 from bleak import BleakClient, BleakScanner
 import struct
 from helper_functions import ble_sense_uuid, setup_logging
@@ -16,10 +18,12 @@ TIMEOUT = 10
 SENSOR_NAME_LIST = [
     "service ID",
     "temperature",
+    "accelerometer"
 ]
 ID_LIST = [
     "0000",  # service ID, not to be read
     "2001",  # temperature
+    "5001"   # accelerometer
 ]
 
 CHARACTERISTIC_NAMES_TO_UUIDS = {
@@ -52,6 +56,17 @@ log_root = setup_logging(name, filepath_log)
 # File path - Might want to change this so that each file is created when a nicla is connected and reattached if connection is lost TODO
 filepath_out = fr"/Users/marcobogataj/Documents/UNI/magistrale/BG/Mechatronics LAB/Industrial IoT/Nicla Sense ME/BLEcode/python/data/nicla_{datetime_str}.dat"
 
+# Create a TCP/IP socket
+serversocket = socket.socket(socket.AF_INET, # Internet
+                             socket.SOCK_STREAM) # TCP/IP
+
+serveraddress = ('localhost', 30001) #(IP,PORT)
+serversocket.bind(serveraddress)
+serversocket.listen(5)
+log_root.info("Waiting for TCP/IP connection setup...")
+(clientsocket, address) = serversocket.accept()
+init_time=time.time() #initalize time when communication begins
+log_root.info('starting up on {} port {}'.format(*serveraddress))
 
 async def connection_and_notification(client):
     log_root.info("Connecting to device...")
@@ -85,7 +100,7 @@ async def start_notifications(client):
     global notification_toggle_needed
     notification_toggle_needed = False
     log_root.info("The central will be notified from now on...")
-
+    log_root.info("<ctrl>+<alt>+n to toggle notifications, <ctrl>+<alt>+p to unpair")
 
 async def stop_notifications(client):
     for sensor_name in SENSOR_NAME_LIST[1:]:
@@ -112,21 +127,20 @@ async def listen_for_notifications(client):
         if not stop_notification:
             if notification_toggle_needed:
                 await start_notifications(client)
-            log_root.info(
-                "Listening for notification... (<ctrl>+<alt>+n to toggle notifications, <ctrl>+<alt>+p to unpair)"
-            )
+            #log_root.info(
+            #    "Listening for notification... (<ctrl>+<alt>+n to toggle notifications, <ctrl>+<alt>+p to unpair)"
+            #)
             await asyncio.sleep(1)
         else:
             if notification_toggle_needed:
                 await stop_notifications(client)
-            log_root.info(
-                "Not listening... (<ctrl>+<alt>+n to toggle notifications, <ctrl>+<alt>+p to unpair)"
-            )
+            # log_root.info(
+            #     "Not listening... (<ctrl>+<alt>+n to toggle notifications, <ctrl>+<alt>+p to unpair)"
+            # )
             await asyncio.sleep(1)
 
     listener.stop()
     await client.disconnect()
-
 
 def toggle_notifications_handler():
     global stop_notification, notification_toggle_needed
@@ -179,7 +193,7 @@ def match_known_addresses(device, advertisement_data):
 
 async def update_sensor_read(sender, data):
     sensor_name = CHARACTERISTIC_UUIDS_TO_NAMES[sender.uuid]
-    log_root.info(f"Notification received from {sensor_name} sensor")
+    #log_root.info(f"Notification received from {sensor_name} sensor")
 
     global sensor_read
     if sensor_read[sensor_name] is not None:
@@ -188,25 +202,27 @@ async def update_sensor_read(sender, data):
     sensor_read[sensor_name] = data
 
     if all(sensor_read[x] is not None for x in sensor_read.keys()):
-        log_root.info("All sensor read, proceed to log...")
+        #log_root.info("All sensor read, proceed to log...")
         log_sensors()
+        TCP_IP_send()
         clear_sensors()
 
 def log_sensors():
-    global sensor_read
-    now = datetime.now()
+    global sensor_read, dataindex
     temperature = struct.unpack("f", sensor_read["temperature"])[0]
 
-    str_to_write = f"{str(now)},{str(temperature)}\n"
-    log_root.info(f"Packet received: {str_to_write[:-2]}")
-
-    # TODO
+    """generate well behaved time string to avoid boundary crossing in the log file"""
+    stringtime=str(round(time.time()-init_time,3))
+    for _ in range(8-len(stringtime)):
+        stringtime+=str(0)
+        
+    str_to_write = f"{stringtime},{str(temperature)}\n"
+    #log_root.info(f"Packet received: {str_to_write[:-2]}")
 
     with open(filepath_out, "a") as fp:
         fp.write(str_to_write)
 
-    log_root.info("Data written!")
-
+    #log_root.info("Data written!")
 
 def clear_sensors():
     global sensor_read
@@ -214,10 +230,18 @@ def clear_sensors():
         sensor_read[k] = None
 
 
+def TCP_IP_send():
+    global sensor_read
+    temperature = struct.unpack("f", sensor_read["temperature"])[0]
+    msg = struct.pack('>d', temperature)
+    clientsocket.send(msg)
+    #log_root.info(f"Data sent via TCP/IP!")
+    
+
 def main():
     # Header
     with open(filepath_out, "w") as fp:
-        fp.write("datetime,temperature\n")
+        fp.write("dataindex,time,temperature\n")
 
     while not end_loop:
         loop = asyncio.new_event_loop()

@@ -119,7 +119,6 @@
     gasCharacteristic.setEventHandler(BLERead, onGasCharacteristicRead);
 
     rgbLedCharacteristic.setEventHandler(BLEWritten, onRgbLedCharacteristicWrite);
-
     versionCharacteristic.setValue(VERSION);
 
     BLE.addService(service);

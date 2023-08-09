@@ -9,7 +9,7 @@ import struct
 
 # Create a UDP socket
 sock = socket.socket(socket.AF_INET, # Internet
-                     socket.SOCK_DGRAM) # UDP
+                     socket.SOCK_STREAM) # TCP/IP
 
 # Bind the socket to the port
 UDP_IP = '0.0.0.0'
