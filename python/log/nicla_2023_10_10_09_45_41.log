@@ -1,0 +1,25 @@
+2023-10-10 09:45:41,898 [MainThread] [INFO]  Do you want to establish a TCP/IP connection?? (y/n)
+2023-10-10 09:45:43,643 [MainThread] [INFO]  Waiting for TCP/IP connection setup...
+2023-10-10 09:46:43,156 [MainThread] [INFO]  starting up on 192.168.4.201 port 25000
+2023-10-10 09:46:43,159 [MainThread] [INFO]  Wait...
+2023-10-10 09:46:44,164 [MainThread] [INFO]  Searching for devices...
+2023-10-10 09:46:45,187 [MainThread] [INFO]  Device found: 39FD4BD4-7DDA-4BE3-82F9-F969E569A119
+2023-10-10 09:46:45,199 [MainThread] [INFO]  Connecting to device...
+2023-10-10 09:46:46,378 [MainThread] [INFO]  Requesting notification on sensors...
+2023-10-10 09:46:46,466 [MainThread] [INFO]  The central will be notified from now on...
+2023-10-10 09:46:46,466 [MainThread] [INFO]  <ctrl>+<alt>+n to toggle notifications, <ctrl>+<alt>+p to unpair
+2023-10-10 09:47:23,079 [MainThread] [INFO]  Sensor temperature was already read!
+2023-10-10 09:47:23,082 [MainThread] [INFO]  Sensor humidity was already read!
+2023-10-10 09:47:23,086 [MainThread] [INFO]  Sensor iaq was already read!
+2023-10-10 09:47:24,083 [MainThread] [INFO]  Sensor temperature was already read!
+2023-10-10 09:47:24,086 [MainThread] [INFO]  Sensor humidity was already read!
+2023-10-10 09:47:24,090 [MainThread] [INFO]  Sensor iaq was already read!
+2023-10-10 09:47:25,087 [MainThread] [INFO]  Sensor temperature was already read!
+2023-10-10 09:47:25,090 [MainThread] [INFO]  Sensor humidity was already read!
+2023-10-10 09:47:25,093 [MainThread] [INFO]  Sensor iaq was already read!
+2023-10-10 09:47:26,092 [MainThread] [INFO]  Sensor temperature was already read!
+2023-10-10 09:47:26,095 [MainThread] [INFO]  Sensor humidity was already read!
+2023-10-10 09:47:26,100 [MainThread] [INFO]  Sensor iaq was already read!
+2023-10-10 09:47:27,099 [MainThread] [INFO]  Sensor temperature was already read!
+2023-10-10 09:47:27,101 [MainThread] [INFO]  Sensor humidity was already read!
+2023-10-10 09:47:27,106 [MainThread] [INFO]  Sensor iaq was already read!

@@ -1,0 +1,19 @@
+2023-10-05 15:37:09,361 [MainThread] [INFO]  Do you want to establish a TCP/IP connection?? (y/n)
+2023-10-05 15:37:10,790 [MainThread] [INFO]  Waiting for TCP/IP connection setup...
+2023-10-05 15:37:14,781 [MainThread] [INFO]  starting up on 192.168.4.201 port 25000
+2023-10-05 15:37:14,784 [MainThread] [INFO]  Wait...
+2023-10-05 15:37:15,790 [MainThread] [INFO]  Searching for devices...
+2023-10-05 15:37:16,518 [MainThread] [INFO]  Device found: 39FD4BD4-7DDA-4BE3-82F9-F969E569A119
+2023-10-05 15:37:16,539 [MainThread] [INFO]  Connecting to device...
+2023-10-05 15:37:44,215 [MainThread] [INFO]  Requesting notification on sensors...
+2023-10-05 15:37:49,060 [MainThread] [INFO]  Sensor humidity was already read!
+2023-10-05 15:37:50,016 [MainThread] [INFO]  The central will be notified from now on...
+2023-10-05 15:37:50,017 [MainThread] [INFO]  <ctrl>+<alt>+n to toggle notifications, <ctrl>+<alt>+p to unpair
+2023-10-05 15:37:52,207 [MainThread] [INFO]  Sensor temperature was already read!
+2023-10-05 15:37:52,209 [MainThread] [INFO]  Sensor humidity was already read!
+2023-10-05 15:41:28,554 [MainThread] [INFO]  Sensor temperature was already read!
+2023-10-05 15:41:28,556 [MainThread] [INFO]  Sensor humidity was already read!
+2023-10-05 15:41:28,559 [MainThread] [INFO]  Sensor iaq was already read!
+2023-10-05 15:41:30,428 [MainThread] [INFO]  Sensor temperature was already read!
+2023-10-05 15:41:30,431 [MainThread] [INFO]  Sensor humidity was already read!
+2023-10-05 15:41:30,434 [MainThread] [INFO]  Sensor iaq was already read!

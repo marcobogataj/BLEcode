@@ -14,29 +14,17 @@ TIMEOUT = 10
 
 SENSOR_NAME_LIST = [
     "service ID",
-    "accelerometer",
-    "gyroscope"]
-
-"""     "humidity",
+    "humidity",
     "temperature",
-    "pressure",
     "iaq",
-    "co2",
-    "gas",
-] """
+]
 
 ID_LIST = [
     "0000",  # service ID, not to be read
-    "5001",  # accelerometer
-    "6001"]  # gyroscope
-
-"""     "3001",  # humidity
+    "3001",  # humidity
     "2001",  # temperature
-    "4001",  # pressure
     "9001",  # iaq
-    "9002",  # co2
-    "9003",  # gas
-] """
+]
 
 CHARACTERISTIC_NAMES_TO_UUIDS = {
     charac_name: ble_sense_uuid(charac_id)
@@ -76,7 +64,7 @@ log_root.info(f"Do you want to establish a TCP/IP connection?? (y/n)")
 tcp_state = str.lower(input())
 
 if tcp_state == "y":
-    serveraddress = ('localhost', 25000) #(IP,PORT)
+    serveraddress = ('192.168.4.201', 25000) #(IP,PORT)
     serversocket.bind(serveraddress)
     serversocket.listen(5)
     log_root.info("Waiting for TCP/IP connection setup...")
@@ -231,23 +219,17 @@ async def update_sensor_read(sender, data):
 
 def parse_sensors():
     global sensor_read
-    accelerometer = struct.unpack("fff", sensor_read["accelerometer"])
-    gyroscope = struct.unpack("fff", sensor_read["gyroscope"])
-    data_read = accelerometer+gyroscope
 
-    """ temperature = round(struct.unpack("f", sensor_read["temperature"])[0],3)
+    temperature = round(struct.unpack("f", sensor_read["temperature"])[0],3)-10 #with correction of ~10 C°
     humidity = float(int(bytes(sensor_read["humidity"])[0])) 
-    pressure = float(int(bytes(sensor_read["pressure"])[0]))
-    co2 = float(int(bytes(sensor_read["co2"])[0]))  
-    gas = float(int(bytes(sensor_read["gas"])[0]))  
-    iaq = struct.unpack("f", sensor_read["iaq"])[0] """
+    iaq = struct.unpack("f", sensor_read["iaq"])[0] 
 
-    """ data_read = [temperature,humidity,pressure,iaq] """    
+    data_read = [temperature,humidity,iaq] 
     return data_read
 
 def pack_vector(X):
     b = bytes()
-    b = b.join((struct.pack('>d', val) for val in X))
+    b = b.join((struct.pack('d', val) for val in X))
     return b
 
 def TCP_IP_send(X):
@@ -276,12 +258,10 @@ def clear_sensors():
     for k in sensor_read.keys():
         sensor_read[k] = None
     
-
 def main():
     # Header
     with open(filepath_out, "w") as fp:
-        #fp.write("time[ms],T[°C],hum[%],P[kPa],co2[ppb],gas,iaq\n")
-        fp.write("time[ms],accX,accY,accZ,omegaX,omegaY,omegaZ\n")
+        fp.write("time[ms],T[°C],hum[%],IAQ[\]\n")
 
     while not end_loop:
         loop = asyncio.new_event_loop()

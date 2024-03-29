@@ -7,6 +7,7 @@ import struct
 from helper_functions import ble_sense_uuid, setup_logging
 from pynput import keyboard
 import sys
+import serial
 
 # Constants
 KNOWN_ADDRESSES = ["39FD4BD4-7DDA-4BE3-82F9-F969E569A119"]
@@ -14,29 +15,13 @@ TIMEOUT = 10
 
 SENSOR_NAME_LIST = [
     "service ID",
-    "accelerometer",
-    "gyroscope"]
-
-"""     "humidity",
-    "temperature",
-    "pressure",
-    "iaq",
-    "co2",
-    "gas",
-] """
+    "time",
+]
 
 ID_LIST = [
     "0000",  # service ID, not to be read
-    "5001",  # accelerometer
-    "6001"]  # gyroscope
-
-"""     "3001",  # humidity
-    "2001",  # temperature
-    "4001",  # pressure
-    "9001",  # iaq
-    "9002",  # co2
-    "9003",  # gas
-] """
+    "2001",  # time
+]
 
 CHARACTERISTIC_NAMES_TO_UUIDS = {
     charac_name: ble_sense_uuid(charac_id)
@@ -76,7 +61,7 @@ log_root.info(f"Do you want to establish a TCP/IP connection?? (y/n)")
 tcp_state = str.lower(input())
 
 if tcp_state == "y":
-    serveraddress = ('localhost', 25000) #(IP,PORT)
+    serveraddress = ('192.168.4.201', 25000) #(IP,PORT)
     serversocket.bind(serveraddress)
     serversocket.listen(5)
     log_root.info("Waiting for TCP/IP connection setup...")
@@ -231,23 +216,16 @@ async def update_sensor_read(sender, data):
 
 def parse_sensors():
     global sensor_read
-    accelerometer = struct.unpack("fff", sensor_read["accelerometer"])
-    gyroscope = struct.unpack("fff", sensor_read["gyroscope"])
-    data_read = accelerometer+gyroscope
 
-    """ temperature = round(struct.unpack("f", sensor_read["temperature"])[0],3)
-    humidity = float(int(bytes(sensor_read["humidity"])[0])) 
-    pressure = float(int(bytes(sensor_read["pressure"])[0]))
-    co2 = float(int(bytes(sensor_read["co2"])[0]))  
-    gas = float(int(bytes(sensor_read["gas"])[0]))  
-    iaq = struct.unpack("f", sensor_read["iaq"])[0] """
+    time_BLE = struct.unpack("f", sensor_read["time"])[0] #time
+    #time_serial = readserial('/dev/cu.usbmodem534F6B6E2', 115200)
 
-    """ data_read = [temperature,humidity,pressure,iaq] """    
+    data_read = [time_BLE]; 
     return data_read
 
 def pack_vector(X):
     b = bytes()
-    b = b.join((struct.pack('>d', val) for val in X))
+    b = b.join((struct.pack('d', val) for val in X))
     return b
 
 def TCP_IP_send(X):
@@ -256,9 +234,7 @@ def TCP_IP_send(X):
 
 def log_sensors(X):
     """generate well behaved time string to avoid boundary crossing in the log file"""
-    stringtime=str(round(time.time()-init_time,3))
-    for _ in range(8-len(stringtime)):
-        stringtime+=str(0)
+    stringtime=datetime.utcnow().strftime('%H:%M:%S.%f')[:-3]
 
     """Convert vector to string to log"""
     delimiter = ', '
@@ -275,13 +251,16 @@ def clear_sensors():
     global sensor_read
     for k in sensor_read.keys():
         sensor_read[k] = None
-    
 
+def readserial(comport, baudrate):
+    ser = serial.Serial(comport, baudrate, timeout=1)         # 1/timeout is the frequency at which the port is read
+    data = ser.readline().decode().strip()
+    return data
+    
 def main():
     # Header
     with open(filepath_out, "w") as fp:
-        #fp.write("time[ms],T[°C],hum[%],P[kPa],co2[ppb],gas,iaq\n")
-        fp.write("time[ms],accX,accY,accZ,omegaX,omegaY,omegaZ\n")
+        fp.write("time, time_serial[ms], time_BLE[ms]\n")
 
     while not end_loop:
         loop = asyncio.new_event_loop()

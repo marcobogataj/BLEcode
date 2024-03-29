@@ -3,11 +3,13 @@
 #include <ArduinoBLE.h>
 
 #define BLE_SENSE_UUID(val) ("19b10000-" val "-537e-4f6c-d104768a1214")
-#define ACQUISITION_INTERVAL 1000
+#define SLOW_ACQUISITION_INTERVAL 5000
+#define FAST_ACQUISITION_INTERVAL 100
 #define SCAN_INTERVAL 1000
 
 // Constants
 const int VERSION = 0x00000000;
+const float conv = 16/pow(2,16);
 
 // BLE variables
 BLEService service(BLE_SENSE_UUID("0000"));
@@ -41,7 +43,8 @@ SensorQuaternion quaternion(SENSOR_ID_RV);
 SensorBSEC bsec(SENSOR_ID_BSEC);
 
 // variable to be to check for time to be passed
-unsigned long last_acq_time;
+unsigned long last_slow_acq_time;
+unsigned long last_fast_acq_time;
 unsigned long last_scan_time;
 
 // To take care of central
@@ -118,7 +121,8 @@ void setup() {
   BLEDevice central;
 
   last_scan_time = 0;
-  last_acq_time = 0;
+  last_fast_acq_time = 0;
+  last_slow_acq_time = 0;
 }
 
 void loop() {
@@ -141,15 +145,20 @@ void loop() {
     } else nicla::leds.setColor(red);
 
   } else {
-    if (millis() - last_acq_time > ACQUISITION_INTERVAL) {
-      last_acq_time = millis();
-      // Comms every ACQUISITION_INTERVAL ms
-
+    if (millis() - last_fast_acq_time > FAST_ACQUISITION_INTERVAL) {
       if (central) {
         if (central.connected()) {
+          last_fast_acq_time = millis();
           nicla::leds.setColor(blue);
           BHY2.update();
-          check_subscriptions();
+          //Check only fast sampling sensors like accelerometer and gyroscope
+          check_subscriptions(0);
+
+          if (millis() - last_slow_acq_time > SLOW_ACQUISITION_INTERVAL) {
+            last_slow_acq_time = millis();
+            //Check also slow sensors such as temperature, humidity, iaq & co2
+            check_subscriptions(1);
+          }
         }
       } else {
         central_discovered = false;
@@ -165,38 +174,42 @@ void loop() {
   }
 }
 
-void check_subscriptions() {
+void check_subscriptions(int mode) {
+
   if (accelerometerCharacteristic.subscribed()) {
     accelerometer_notify();              
   }
   if (gyroscopeCharacteristic.subscribed()) {
     gyroscope_notify();              
   }
-  if (temperatureCharacteristic.subscribed()) {
-    temperature_notify();              
-  }
-  if (humidityCharacteristic.subscribed()) {
-    humidity_notify();              
-  }
-  if (pressureCharacteristic.subscribed()) {
-    pressure_notify();              
-  }
-  if (bsecCharacteristic.subscribed()) {
-   bsec_notify();              
-  }
-  if (co2Characteristic.subscribed()) {
-    co2_notify();              
-  }
-  if (gasCharacteristic.subscribed()) {
-    gas_notify();              
+
+  if (mode==1){
+    if (temperatureCharacteristic.subscribed()) {
+      temperature_notify();              
+    }
+    if (humidityCharacteristic.subscribed()) {
+      humidity_notify();              
+    }
+    if (pressureCharacteristic.subscribed()) {
+      pressure_notify();              
+    }
+    if (bsecCharacteristic.subscribed()) {
+    bsec_notify();              
+    }
+    if (co2Characteristic.subscribed()) {
+      co2_notify();              
+    }
+    if (gasCharacteristic.subscribed()) {
+      gas_notify();              
+    }
   }
 }
 
 void accelerometer_notify() {
   float x, y, z;
-  x = accelerometer.x();
-  y = accelerometer.y();
-  z = accelerometer.z();
+  x = accelerometer.x()*conv;
+  y = accelerometer.y()*conv;
+  z = accelerometer.z()*conv;
 
   float accelerometerValues[] = {x, y, z};
   accelerometerCharacteristic.writeValue(accelerometerValues, sizeof(accelerometerValues));
@@ -205,9 +218,9 @@ void accelerometer_notify() {
 void gyroscope_notify() {
   float x, y, z;
 
-  x = gyroscope.x();
-  y = gyroscope.y();
-  z = gyroscope.z();
+  x = gyroscope.x()*conv;;
+  y = gyroscope.y()*conv;;
+  z = gyroscope.z()*conv;;
 
   float gyroscopeValues[3] = {x, y, z};
 

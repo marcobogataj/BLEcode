@@ -8,6 +8,7 @@
 
 // Constants
 const int VERSION = 0x00000000;
+const float conv = 16/pow(2,16);
 
 // BLE variables
 BLEService service(BLE_SENSE_UUID("0000"));
@@ -15,17 +16,9 @@ BLEService service(BLE_SENSE_UUID("0000"));
 BLEUnsignedIntCharacteristic versionCharacteristic(BLE_SENSE_UUID("1001"), BLERead | BLENotify);
 BLEFloatCharacteristic temperatureCharacteristic(BLE_SENSE_UUID("2001"), BLERead | BLENotify);
 BLEUnsignedIntCharacteristic humidityCharacteristic(BLE_SENSE_UUID("3001"), BLERead | BLENotify);
-BLEFloatCharacteristic pressureCharacteristic(BLE_SENSE_UUID("4001"),  BLERead | BLENotify);
-
-BLECharacteristic accelerometerCharacteristic(BLE_SENSE_UUID("5001"), BLERead | BLENotify, 3 * sizeof(float));  // Array of 3x 2 Bytes, XYZ (float) g
-BLECharacteristic gyroscopeCharacteristic(BLE_SENSE_UUID("6001"), BLERead | BLENotify, 3 * sizeof(float));    // Array of 3x 2 Bytes, XYZ (float) dps
-BLECharacteristic quaternionCharacteristic(BLE_SENSE_UUID("7001"), BLERead | BLENotify, 4 * sizeof(float));     // Array of 4x 2 Bytes, XYZW (float) uT
+BLEFloatCharacteristic bsecCharacteristic(BLE_SENSE_UUID("9001"), BLERead | BLENotify);
 
 BLECharacteristic rgbLedCharacteristic(BLE_SENSE_UUID("8001"), BLERead | BLEWrite, 3 * sizeof(byte));  // Array of 3 bytes, RGB
-
-BLEFloatCharacteristic bsecCharacteristic(BLE_SENSE_UUID("9001"), BLERead | BLENotify);
-BLEIntCharacteristic  co2Characteristic(BLE_SENSE_UUID("9002"), BLERead | BLENotify);
-BLEUnsignedIntCharacteristic gasCharacteristic(BLE_SENSE_UUID("9003"), BLERead | BLENotify);
 
 // String for the local and device name
 String name;
@@ -33,11 +26,6 @@ String name;
 // Sensor declarations
 Sensor temperature(SENSOR_ID_TEMP);
 Sensor humidity(SENSOR_ID_HUM);
-Sensor pressure(SENSOR_ID_BARO);
-Sensor gas(SENSOR_ID_GAS);
-SensorXYZ gyroscope(SENSOR_ID_GYRO);
-SensorXYZ accelerometer(SENSOR_ID_ACC);
-SensorQuaternion quaternion(SENSOR_ID_RV);
 SensorBSEC bsec(SENSOR_ID_BSEC);
 
 // variable to be to check for time to be passed
@@ -61,12 +49,7 @@ void setup() {
     BHY2.begin(NICLA_STANDALONE);
     temperature.begin();
     humidity.begin();
-    pressure.begin();
-    gyroscope.begin();
-    accelerometer.begin();
-    quaternion.begin();
     bsec.begin();
-    gas.begin();
 
   if (!BLE.begin()) {
     Serial.println("Failed to initialize BLE!");
@@ -98,14 +81,7 @@ void setup() {
   service.addCharacteristic(versionCharacteristic);
   service.addCharacteristic(temperatureCharacteristic);
   service.addCharacteristic(humidityCharacteristic);
-  service.addCharacteristic(pressureCharacteristic);
-  service.addCharacteristic(versionCharacteristic);
-  service.addCharacteristic(accelerometerCharacteristic);
-  service.addCharacteristic(gyroscopeCharacteristic);
-  service.addCharacteristic(quaternionCharacteristic);
   service.addCharacteristic(bsecCharacteristic);
-  service.addCharacteristic(co2Characteristic);
-  service.addCharacteristic(gasCharacteristic);
   service.addCharacteristic(rgbLedCharacteristic);
 
   rgbLedCharacteristic.setEventHandler(BLEWritten, onRgbLedCharacteristicWrite);
@@ -142,18 +118,15 @@ void loop() {
 
   } else {
     if (millis() - last_acq_time > ACQUISITION_INTERVAL) {
-      last_acq_time = millis();
-      // Comms every ACQUISITION_INTERVAL ms
-
       if (central) {
         if (central.connected()) {
+          last_acq_time = millis();
           nicla::leds.setColor(blue);
           BHY2.update();
           check_subscriptions();
         }
       } else {
         central_discovered = false;
-        // TODO
       }
     } else {
       nicla::leds.setColor(green);
@@ -166,53 +139,17 @@ void loop() {
 }
 
 void check_subscriptions() {
-  if (accelerometerCharacteristic.subscribed()) {
-    accelerometer_notify();              
-  }
-  if (gyroscopeCharacteristic.subscribed()) {
-    gyroscope_notify();              
-  }
   if (temperatureCharacteristic.subscribed()) {
     temperature_notify();              
   }
   if (humidityCharacteristic.subscribed()) {
     humidity_notify();              
   }
-  if (pressureCharacteristic.subscribed()) {
-    pressure_notify();              
-  }
   if (bsecCharacteristic.subscribed()) {
-   bsec_notify();              
-  }
-  if (co2Characteristic.subscribed()) {
-    co2_notify();              
-  }
-  if (gasCharacteristic.subscribed()) {
-    gas_notify();              
+    bsec_notify();              
   }
 }
 
-void accelerometer_notify() {
-  float x, y, z;
-  x = accelerometer.x();
-  y = accelerometer.y();
-  z = accelerometer.z();
-
-  float accelerometerValues[] = {x, y, z};
-  accelerometerCharacteristic.writeValue(accelerometerValues, sizeof(accelerometerValues));
-}
-
-void gyroscope_notify() {
-  float x, y, z;
-
-  x = gyroscope.x();
-  y = gyroscope.y();
-  z = gyroscope.z();
-
-  float gyroscopeValues[3] = {x, y, z};
-
-  gyroscopeCharacteristic.writeValue(gyroscopeValues, sizeof(gyroscopeValues));
-}
 
 void temperature_notify(){
   float temperatureValue = temperature.value();
@@ -224,24 +161,9 @@ void humidity_notify(){
   humidityCharacteristic.writeValue(humidityValue);
 }
 
-void pressure_notify(){
-  float pressureValue = pressure.value();
-  pressureCharacteristic.writeValue(pressureValue);
-}
-
 void bsec_notify(){
   float airQuality = float(bsec.iaq());
   bsecCharacteristic.writeValue(airQuality);
-}
-
-void co2_notify(){
-  uint32_t co2 = bsec.co2_eq();
-  co2Characteristic.writeValue(co2);
-}
-
-void gas_notify(){
-  unsigned int g = gas.value();
-  gasCharacteristic.writeValue(g);
 }
 
 void onRgbLedCharacteristicWrite(BLEDevice central, BLECharacteristic characteristic){
